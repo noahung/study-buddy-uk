@@ -18,6 +18,10 @@ import NotesListScreen from './screens/NotesListScreen';
 import NoteDetailScreen from './screens/NoteDetailScreen';
 import RevisionHubScreen from './screens/RevisionHubScreen';
 import RevisionStudyScreen from './screens/RevisionStudyScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import NotificationsScreen from './screens/NotificationsScreen';
+import SubscriptionScreen from './screens/SubscriptionScreen';
 
 // Navigation Components
 import BottomNavigation from './components/navigation/BottomNavigation';
@@ -138,7 +142,7 @@ const StudyBuddyApp: React.FC = () => {
       case 'mock-test-menu':
         return (
           <MockTestMenuScreen 
-            onNavigate={handleBottomNavigation}
+            onNavigate={handleNavigation}
             onOpenSidebar={handleOpenSidebar}
           />
         );
@@ -146,10 +150,12 @@ const StudyBuddyApp: React.FC = () => {
       case 'mock-test':
         return (
           <MockTestScreen 
-            onNavigate={handleBottomNavigation}
+            onNavigate={handleNavigation}
             onOpenSidebar={handleOpenSidebar}
           />
         );
+      
+
       
       case 'test-results':
         return (
@@ -201,23 +207,40 @@ const StudyBuddyApp: React.FC = () => {
       
       case 'profile':
         return (
-          <View style={[layout.container, layout.centered]}>
-            <StatusBar style="dark" />
-            {/* Placeholder for Profile Screen */}
-            <View style={{ padding: 20, alignItems: 'center' }}>
-              <Text variant="h2" style={{ marginBottom: 10 }}>👤 Profile Screen</Text>
-              <Text variant="body" color="secondary">Coming soon...</Text>
-            </View>
-          </View>
+          <ProfileScreen 
+            onNavigate={handleNavigation} 
+            onOpenSidebar={handleOpenSidebar}
+          />
         );
       
       case 'settings':
         return (
+          <SettingsScreen 
+            onNavigate={handleNavigation} 
+          />
+        );
+
+      case 'notifications':
+        return (
+          <NotificationsScreen 
+            onNavigate={handleNavigation} 
+          />
+        );
+
+      case 'subscription':
+        return (
+          <SubscriptionScreen 
+            onNavigate={handleNavigation} 
+          />
+        );
+
+      case 'help':
+        return (
           <View style={[layout.container, layout.centered]}>
             <StatusBar style="dark" />
-            {/* Placeholder for Settings Screen */}
+            {/* Placeholder for Help Screen */}
             <View style={{ padding: 20, alignItems: 'center' }}>
-              <Text variant="h2" style={{ marginBottom: 10 }}>⚙️ Settings Screen</Text>
+              <Text variant="h2" style={{ marginBottom: 10 }}>❓ Help & Support</Text>
               <Text variant="body" color="secondary">Coming soon...</Text>
             </View>
           </View>

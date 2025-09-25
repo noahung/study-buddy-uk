@@ -61,7 +61,7 @@ const MockTestMenuScreen: React.FC<Props> = ({ onNavigate, onOpenSidebar }) => {
       icon: FileText,
       color: '#8b5cf6',
       stats: '500+ questions',
-      targetScreen: 'exam-bank'
+      targetScreen: 'mock-test'
     },
     {
       id: 'practice',

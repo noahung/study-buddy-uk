@@ -92,14 +92,18 @@ export const neumorphicShadow = {
       elevation: 2,
     },
     web: {
-      // @ts-ignore - boxShadow is web-only
-      boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.9)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
     },
     default: {
-      // @ts-ignore - boxShadow is web-only
-      boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.9)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
     },
-  }),
+  }) as ViewStyle,
   
   // Medium neumorphic effect (default)
   md: Platform.select({
@@ -113,14 +117,18 @@ export const neumorphicShadow = {
       elevation: 4,
     },
     web: {
-      // @ts-ignore - boxShadow is web-only
-      boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.9)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 4, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
     },
     default: {
-      // @ts-ignore - boxShadow is web-only
-      boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.9)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 4, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
     },
-  }),
+  }) as ViewStyle,
   
   // Large neumorphic effect
   lg: Platform.select({
@@ -134,14 +142,18 @@ export const neumorphicShadow = {
       elevation: 6,
     },
     web: {
-      // @ts-ignore - boxShadow is web-only
-      boxShadow: '12px 12px 24px rgba(0, 0, 0, 0.1), -12px -12px 24px rgba(255, 255, 255, 0.9)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 6, height: 6 },
+      shadowOpacity: 0.15,
+      shadowRadius: 12,
     },
     default: {
-      // @ts-ignore - boxShadow is web-only
-      boxShadow: '12px 12px 24px rgba(0, 0, 0, 0.1), -12px -12px 24px rgba(255, 255, 255, 0.9)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 6, height: 6 },
+      shadowOpacity: 0.15,
+      shadowRadius: 12,
     },
-  }),
+  }) as ViewStyle,
   
   // Extra large for cards
   xl: Platform.select({
@@ -155,14 +167,18 @@ export const neumorphicShadow = {
       elevation: 8,
     },
     web: {
-      // @ts-ignore - boxShadow is web-only
-      boxShadow: '16px 16px 32px rgba(0, 0, 0, 0.1), -16px -16px 32px rgba(255, 255, 255, 0.9)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 8, height: 8 },
+      shadowOpacity: 0.15,
+      shadowRadius: 16,
     },
     default: {
-      // @ts-ignore - boxShadow is web-only
-      boxShadow: '16px 16px 32px rgba(0, 0, 0, 0.1), -16px -16px 32px rgba(255, 255, 255, 0.9)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 8, height: 8 },
+      shadowOpacity: 0.15,
+      shadowRadius: 16,
     },
-  }),
+  }) as ViewStyle,
 };
 
 // Common neumorphic container style

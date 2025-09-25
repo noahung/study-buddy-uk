@@ -1,5 +1,9 @@
-import ComponentDemo from '@/src/screens/ComponentDemo';
+import { Text, View } from 'react-native';
 
 export default function HomeScreen() {
-  return <ComponentDemo />;
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Hello Expo Mobile!</Text>
+    </View>
+  );
 }
