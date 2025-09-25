@@ -7,6 +7,7 @@ import {
   Book,
   MessageCircle,
   ClipboardCheck,
+  CreditCard,
   FileText,
   TrendingUp,
 } from 'lucide-react-native';
@@ -26,8 +27,8 @@ interface BottomNavigationProps {
 const tabs: TabItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: Book },
   { id: 'ai-chat', label: 'AI Chat', icon: MessageCircle },
+  { id: 'flashcards', label: 'Flashcards', icon: CreditCard },
   { id: 'mock-test-menu', label: 'Mock Tests', icon: ClipboardCheck },
-  { id: 'notes', label: 'Notes', icon: FileText },
   { id: 'revision', label: 'Revision', icon: TrendingUp },
 ];
 

@@ -12,6 +12,8 @@ import AIChatScreen from './screens/AIChatScreen';
 import MockTestMenuScreen from './screens/MockTestMenuScreen';
 import MockTestScreen from './screens/MockTestScreen';
 import TestResultScreen from './screens/TestResultScreen';
+import FlashcardDeckScreen from './screens/FlashcardDeckScreen';
+import FlashcardStudyScreen from './screens/FlashcardStudyScreen';
 
 // Navigation Components
 import BottomNavigation from './components/navigation/BottomNavigation';
@@ -40,6 +42,7 @@ type AppScreen =
   | 'mock-test'
   | 'test-results'
   | 'flashcards'
+  | 'flashcard-study'
   | 'notes'
   | 'revision'
   | 'profile'
@@ -146,14 +149,17 @@ const StudyBuddyApp: React.FC = () => {
       
       case 'flashcards':
         return (
-          <View style={[layout.container, layout.centered]}>
-            <StatusBar style="dark" />
-            {/* Placeholder for Flashcards Screen */}
-            <View style={{ padding: 20, alignItems: 'center' }}>
-              <Text variant="h2" style={{ marginBottom: 10 }}>🃏 Flashcards Screen</Text>
-              <Text variant="body" color="secondary">Coming soon...</Text>
-            </View>
-          </View>
+          <FlashcardDeckScreen 
+            onNavigate={handleBottomNavigation}
+            onOpenSidebar={handleOpenSidebar}
+          />
+        );
+      
+      case 'flashcard-study':
+        return (
+          <FlashcardStudyScreen 
+            onNavigate={handleBottomNavigation}
+          />
         );
       
       case 'notes':
