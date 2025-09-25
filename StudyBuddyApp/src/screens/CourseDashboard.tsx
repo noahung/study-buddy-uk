@@ -45,7 +45,7 @@ const CourseDashboard: React.FC<CourseDashboardProps> = ({ onNavigate, onOpenSid
       stats: '127 cards',
     },
     {
-      id: 'mock-test',
+      id: 'mock-test-menu',
       title: 'Mock Tests',
       description: 'Practice exams',
       icon: CheckSquare,

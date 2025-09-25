@@ -9,6 +9,9 @@ import SplashScreen from './screens/SplashScreen';
 import CourseSelection from './screens/CourseSelection';
 import CourseDashboard from './screens/CourseDashboard';
 import AIChatScreen from './screens/AIChatScreen';
+import MockTestMenuScreen from './screens/MockTestMenuScreen';
+import MockTestScreen from './screens/MockTestScreen';
+import TestResultScreen from './screens/TestResultScreen';
 
 // Navigation Components
 import BottomNavigation from './components/navigation/BottomNavigation';
@@ -33,6 +36,9 @@ type AppScreen =
   | 'course-selection' 
   | 'dashboard'
   | 'ai-chat'
+  | 'mock-test-menu'
+  | 'mock-test'
+  | 'test-results'
   | 'flashcards'
   | 'notes'
   | 'revision'
@@ -112,6 +118,29 @@ const StudyBuddyApp: React.FC = () => {
           <AIChatScreen 
             onNavigate={handleBottomNavigation}
             onOpenSidebar={handleOpenSidebar}
+          />
+        );
+      
+      case 'mock-test-menu':
+        return (
+          <MockTestMenuScreen 
+            onNavigate={handleBottomNavigation}
+            onOpenSidebar={handleOpenSidebar}
+          />
+        );
+      
+      case 'mock-test':
+        return (
+          <MockTestScreen 
+            onNavigate={handleBottomNavigation}
+            onOpenSidebar={handleOpenSidebar}
+          />
+        );
+      
+      case 'test-results':
+        return (
+          <TestResultScreen 
+            onNavigate={handleBottomNavigation}
           />
         );
       
