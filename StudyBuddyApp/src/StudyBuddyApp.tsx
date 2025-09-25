@@ -14,6 +14,8 @@ import MockTestScreen from './screens/MockTestScreen';
 import TestResultScreen from './screens/TestResultScreen';
 import FlashcardDeckScreen from './screens/FlashcardDeckScreen';
 import FlashcardStudyScreen from './screens/FlashcardStudyScreen';
+import NotesListScreen from './screens/NotesListScreen';
+import NoteDetailScreen from './screens/NoteDetailScreen';
 
 // Navigation Components
 import BottomNavigation from './components/navigation/BottomNavigation';
@@ -44,6 +46,7 @@ type AppScreen =
   | 'flashcards'
   | 'flashcard-study'
   | 'notes'
+  | 'note-detail'
   | 'revision'
   | 'profile'
   | 'settings'
@@ -58,6 +61,11 @@ const StudyBuddyApp: React.FC = () => {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Navigation handler
+  const handleNavigation = (screen: string) => {
+    setCurrentScreen(screen as AppScreen);
+  };
 
   // Auto-advance from splash screen (matches web app behavior)
   useEffect(() => {
@@ -164,14 +172,15 @@ const StudyBuddyApp: React.FC = () => {
       
       case 'notes':
         return (
-          <View style={[layout.container, layout.centered]}>
-            <StatusBar style="dark" />
-            {/* Placeholder for Notes Screen */}
-            <View style={{ padding: 20, alignItems: 'center' }}>
-              <Text variant="h2" style={{ marginBottom: 10 }}>📝 Notes Screen</Text>
-              <Text variant="body" color="secondary">Coming soon...</Text>
-            </View>
-          </View>
+          <NotesListScreen 
+            onNavigate={handleNavigation}
+            onOpenSidebar={() => setIsSidebarOpen(true)}
+          />
+        );
+
+      case 'note-detail':
+        return (
+          <NoteDetailScreen onNavigate={handleNavigation} />
         );
       
       case 'revision':
