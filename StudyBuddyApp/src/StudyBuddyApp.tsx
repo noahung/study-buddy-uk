@@ -16,6 +16,8 @@ import FlashcardDeckScreen from './screens/FlashcardDeckScreen';
 import FlashcardStudyScreen from './screens/FlashcardStudyScreen';
 import NotesListScreen from './screens/NotesListScreen';
 import NoteDetailScreen from './screens/NoteDetailScreen';
+import RevisionHubScreen from './screens/RevisionHubScreen';
+import RevisionStudyScreen from './screens/RevisionStudyScreen';
 
 // Navigation Components
 import BottomNavigation from './components/navigation/BottomNavigation';
@@ -48,6 +50,7 @@ type AppScreen =
   | 'notes'
   | 'note-detail'
   | 'revision'
+  | 'revision-study'
   | 'profile'
   | 'settings'
   | 'notifications'
@@ -185,14 +188,15 @@ const StudyBuddyApp: React.FC = () => {
       
       case 'revision':
         return (
-          <View style={[layout.container, layout.centered]}>
-            <StatusBar style="dark" />
-            {/* Placeholder for Revision Screen */}
-            <View style={{ padding: 20, alignItems: 'center' }}>
-              <Text variant="h2" style={{ marginBottom: 10 }}>📈 Revision Hub</Text>
-              <Text variant="body" color="secondary">Coming soon...</Text>
-            </View>
-          </View>
+          <RevisionHubScreen 
+            onNavigate={handleNavigation}
+            onOpenSidebar={() => setIsSidebarOpen(true)}
+          />
+        );
+
+      case 'revision-study':
+        return (
+          <RevisionStudyScreen onNavigate={handleNavigation} />
         );
       
       case 'profile':
