@@ -167,10 +167,10 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onNavigate }) => {
       ]}
     >
       <NeumorphicCard
-        style={[
+        style={StyleSheet.flatten([
           styles.messageCard,
           message.role === 'user' && styles.userMessageCard,
-        ]}
+        ])}
         variant={message.role === 'user' ? 'inset' : 'small'}
       >
         <View style={styles.messageHeader}>
