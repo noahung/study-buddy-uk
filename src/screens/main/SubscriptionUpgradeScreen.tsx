@@ -1,19 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
   ScrollView, 
   TouchableOpacity, 
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useSubscription } from '../../contexts/SubscriptionContext';
 import { NeumorphicCard, NeumorphicButton } from '../../components/ui';
 import { Ionicons } from '@expo/vector-icons';
+import { SubscriptionPlan } from '../../types/subscription';
 
-const SubscriptionUpgradeScreen: React.FC = () => {
+interface SubscriptionUpgradeScreenProps {
+  onNavigate?: (screen: string) => void;
+  onGoBack?: () => void;
+}
+
+const SubscriptionUpgradeScreen: React.FC<SubscriptionUpgradeScreenProps> = ({ 
+  onNavigate, 
+  onGoBack 
+}) => {
   const { theme } = useTheme();
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly' | null>(null);
+  const { 
+    isPremium, 
+    currentPlan, 
+    userSubscription, 
+    isLoading, 
+    error,
+    subscribeToPlan, 
+    restorePurchases,
+    getAvailablePlans 
+  } = useSubscription();
+  
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly' | 'lifetime' | null>(null);
+  const [availablePlans, setAvailablePlans] = useState<SubscriptionPlan[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+
+  useEffect(() => {
+    loadPlans();
+  }, []);
+
+  const loadPlans = async () => {
+    try {
+      const plans = await getAvailablePlans();
+      setAvailablePlans(plans);
+    } catch (error) {
+      console.error('Failed to load subscription plans:', error);
+    } finally {
+      setLoadingPlans(false);
+    }
+  };
 
   const features = {
     free: [
@@ -58,21 +97,24 @@ const SubscriptionUpgradeScreen: React.FC = () => {
     }
   ];
 
-  const handleUpgrade = (plan: 'monthly' | 'yearly') => {
-    Alert.alert(
-      'Upgrade to Premium',
-      `You selected the ${plan} plan. Payment integration coming soon!`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Continue', onPress: () => {
-          Alert.alert('Success', 'Subscription upgrade feature coming soon!');
-        }}
-      ]
-    );
+  const handleUpgrade = async (planId: string) => {
+    if (isLoading) return;
+    
+    try {
+      await subscribeToPlan(planId);
+    } catch (error) {
+      console.error('Subscription failed:', error);
+    }
   };
 
-  const handleRestorePurchases = () => {
-    Alert.alert('Restore Purchases', 'Restore purchases feature coming soon!');
+  const handleRestorePurchases = async () => {
+    if (isLoading) return;
+    
+    try {
+      await restorePurchases();
+    } catch (error) {
+      console.error('Restore purchases failed:', error);
+    }
   };
 
   const renderFeature = (feature: string, index: number) => (
@@ -100,78 +142,87 @@ const SubscriptionUpgradeScreen: React.FC = () => {
     </NeumorphicCard>
   );
 
-  const renderPlanCard = (plan: 'monthly' | 'yearly', isPopular: boolean = false) => {
-    const isSelected = selectedPlan === plan;
-    const isYearly = plan === 'yearly';
+  const renderPlanCard = (plan: SubscriptionPlan) => {
+    const isSelected = selectedPlan === plan.id;
+    const isYearly = plan.interval === 'yearly';
+    const isLifetime = plan.interval === 'lifetime';
     
     return (
       <TouchableOpacity
+        key={plan.id}
         style={[
           styles.planCard,
           isSelected && styles.selectedPlan,
-          isPopular && styles.popularPlan,
+          plan.popular && styles.popularPlan,
           { 
             borderColor: isSelected ? theme.colors.primary : theme.colors.border,
             backgroundColor: isSelected ? theme.colors.primary + '10' : theme.colors.background
           }
         ]}
-        onPress={() => setSelectedPlan(plan)}
+        onPress={() => setSelectedPlan(plan.id as any)}
       >
-        {isPopular && (
+        {plan.popular && (
           <View style={[styles.popularBadge, { backgroundColor: theme.colors.warning }]}>
             <Text style={styles.popularBadgeText}>Most Popular</Text>
           </View>
         )}
         
-        {isYearly && (
+        {plan.savings && (
           <View style={[styles.savingsBadge, { backgroundColor: theme.colors.success }]}>
             <Ionicons name="star" size={12} color="white" />
-            <Text style={styles.savingsBadgeText}>Best Value - Save 40%</Text>
+            <Text style={styles.savingsBadgeText}>Save {plan.savings}%</Text>
           </View>
         )}
 
         <View style={styles.planHeader}>
           <Text style={[styles.planTitle, { color: theme.colors.text }]}>
-            Premium {isYearly ? 'Yearly' : 'Monthly'}
+            {plan.name}
           </Text>
           <View style={styles.planPricing}>
             <Text style={[styles.planPrice, { color: theme.colors.text }]}>
-              ${isYearly ? '59.99' : '9.99'}
+              £{plan.price.toFixed(2)}
             </Text>
             <Text style={[styles.planPeriod, { color: theme.colors.textSecondary }]}>
-              /{isYearly ? 'year' : 'month'}
+              /{plan.interval === 'lifetime' ? 'lifetime' : plan.interval === 'yearly' ? 'year' : 'month'}
             </Text>
             {isYearly && (
               <Text style={[styles.planSavings, { color: theme.colors.success }]}>
-                $5.00/month
+                £{(plan.price / 12).toFixed(2)}/month
               </Text>
             )}
           </View>
         </View>
 
         <NeumorphicButton
-          variant={isYearly ? "success" : "warning"}
+          variant={isLifetime ? "success" : isYearly ? "warning" : "primary"}
           size="lg"
-          onPress={() => handleUpgrade(plan)}
+          onPress={() => handleUpgrade(plan.id)}
           style={styles.upgradeButton}
+          disabled={isLoading}
         >
-          Start Free Trial (7 days)
+          {isLoading ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            `Start ${isLifetime ? 'Lifetime' : 'Free Trial'}`
+          )}
         </NeumorphicButton>
 
         <View style={styles.planFeatures}>
-          {features.premium.slice(0, 5).map(renderFeature)}
-          <Text style={[styles.moreFeatures, { color: theme.colors.textSecondary }]}>
-            + 5 more features...
-          </Text>
+          {plan.features.slice(0, 5).map((feature, index) => renderFeature(feature, index))}
+          {plan.features.length > 5 && (
+            <Text style={[styles.moreFeatures, { color: theme.colors.textSecondary }]}>
+              + {plan.features.length - 5} more features...
+            </Text>
+          )}
         </View>
 
-        {isYearly && (
+        {plan.savings && (
           <View style={[styles.savingsHighlight, { backgroundColor: theme.colors.success + '20' }]}>
             <Text style={[styles.savingsText, { color: theme.colors.success }]}>
-              🎯 Save $60 per year!
+              🎯 Save £{(9.99 * 12 - plan.price).toFixed(2)} per year!
             </Text>
             <Text style={[styles.savingsSubtext, { color: theme.colors.textSecondary }]}>
-              That's 2 months free
+              That's {Math.round(plan.savings / 100 * 12)} months free
             </Text>
           </View>
         )}
@@ -196,25 +247,64 @@ const SubscriptionUpgradeScreen: React.FC = () => {
       <NeumorphicCard style={[styles.currentPlanCard, { borderColor: theme.colors.border }]}>
         <View style={styles.currentPlanHeader}>
           <Text style={[styles.currentPlanTitle, { color: theme.colors.text }]}>
-            Current Plan: Free
+            Current Plan: {isPremium ? currentPlan?.name || 'Premium' : 'Free'}
           </Text>
-          <View style={[styles.currentPlanBadge, { backgroundColor: theme.colors.muted }]}>
-            <Text style={[styles.currentPlanBadgeText, { color: theme.colors.textSecondary }]}>
-              Active
+          <View style={[
+            styles.currentPlanBadge, 
+            { backgroundColor: isPremium ? theme.colors.success : theme.colors.muted }
+          ]}>
+            <Text style={[
+              styles.currentPlanBadgeText, 
+              { color: isPremium ? 'white' : theme.colors.textSecondary }
+            ]}>
+              {isPremium ? 'Active' : 'Free'}
             </Text>
           </View>
         </View>
         
         <View style={styles.currentPlanFeatures}>
-          {features.free.map(renderFeature)}
+          {(isPremium ? currentPlan?.features || features.premium : features.free).map(renderFeature)}
         </View>
+        
+        {isPremium && userSubscription && (
+          <View style={styles.subscriptionDetails}>
+            <Text style={[styles.subscriptionText, { color: theme.colors.textSecondary }]}>
+              Next billing: {userSubscription.endDate?.toLocaleDateString() || 'N/A'}
+            </Text>
+            <Text style={[styles.subscriptionText, { color: theme.colors.textSecondary }]}>
+              Auto-renew: {userSubscription.autoRenew ? 'Yes' : 'No'}
+            </Text>
+          </View>
+        )}
       </NeumorphicCard>
 
+      {/* Error Message */}
+      {error && (
+        <NeumorphicCard style={[styles.errorCard, { borderColor: theme.colors.error }]}>
+          <View style={styles.errorContent}>
+            <Ionicons name="alert-circle" size={20} color={theme.colors.error} />
+            <Text style={[styles.errorText, { color: theme.colors.error }]}>
+              {error}
+            </Text>
+          </View>
+        </NeumorphicCard>
+      )}
+
       {/* Premium Plans */}
-      <View style={styles.plansContainer}>
-        {renderPlanCard('monthly', true)}
-        {renderPlanCard('yearly')}
-      </View>
+      {!isPremium && (
+        <View style={styles.plansContainer}>
+          {loadingPlans ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={theme.colors.primary} />
+              <Text style={[styles.loadingText, { color: theme.colors.textSecondary }]}>
+                Loading subscription plans...
+              </Text>
+            </View>
+          ) : (
+            availablePlans.map(renderPlanCard)
+          )}
+        </View>
+      )}
 
       {/* All Premium Features */}
       <NeumorphicCard style={styles.featuresCard}>
@@ -370,6 +460,38 @@ const styles = StyleSheet.create({
   },
   currentPlanFeatures: {
     gap: 8,
+  },
+  subscriptionDetails: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.1)',
+  },
+  subscriptionText: {
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  errorCard: {
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+  },
+  errorContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  errorText: {
+    fontSize: 14,
+    flex: 1,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    fontSize: 14,
+    marginTop: 12,
   },
   plansContainer: {
     gap: 16,

@@ -12,7 +12,9 @@ import {
 } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useCourse } from '../../contexts/CourseContext';
+import { useSubscription } from '../../contexts/SubscriptionContext';
 import { NeumorphicCard, NeumorphicButton, NeumorphicInput } from '../../components/ui';
+import PremiumGate from '../../components/common/PremiumGate';
 import { Ionicons } from '@expo/vector-icons';
 import { aiService } from '../../services/aiService';
 import { 
@@ -39,6 +41,7 @@ interface ChatScreenProps {
 const ChatScreen: React.FC<ChatScreenProps> = ({ onNavigate }) => {
   const { theme } = useTheme();
   const { courses, coursesLoading, loadCourses } = useCourse();
+  const { isPremium, canUseFeature, incrementUsage } = useSubscription();
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -68,6 +71,19 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onNavigate }) => {
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
 
+    // Check if user can use AI chat feature
+    if (!isPremium && !canUseFeature('aiChatSessions')) {
+      Alert.alert(
+        'Usage Limit Reached',
+        'You have reached your daily limit for AI chat sessions. Upgrade to Premium for unlimited access.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Upgrade', onPress: () => onNavigate?.('subscription') }
+        ]
+      );
+      return;
+    }
+
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
@@ -81,6 +97,11 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ onNavigate }) => {
     setInputMessage('');
     setIsLoading(true);
     setError(null);
+
+    // Increment usage for free users
+    if (!isPremium) {
+      await incrementUsage('aiChatSessions');
+    }
 
     try {
       const course = courses.find(c => c.id === selectedCourse);

@@ -11,6 +11,7 @@ import MainLayout from './MainLayout';
 // Import contexts
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { CourseProvider } from '../contexts/CourseContext';
+import { SubscriptionProvider } from '../contexts/SubscriptionContext';
 
 // Import main screens
 import HomeScreen from './main/HomeScreen';
@@ -204,7 +205,9 @@ const MainApp: React.FC = () => {
   return (
     <AuthProvider>
       <CourseProvider>
-        <MainAppContent />
+        <SubscriptionProvider>
+          <MainAppContent />
+        </SubscriptionProvider>
       </CourseProvider>
     </AuthProvider>
   );
